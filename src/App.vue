@@ -1,13 +1,14 @@
-<script setup>
-
-</script>
-
 <template>
-  <div class="text-3xl font-bold underline bg-red-400">
-    Hello from Vue App
+  <div>
+    <RouterView/>
   </div>
 </template>
 
-<style scoped>
+<script>
+import { RouterView } from 'vue-router';
+import App from './scripts/App';
 
-</style>
+export default {
+  ...App
+}
+</script>
