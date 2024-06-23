@@ -1,4 +1,3 @@
-import { watch } from "vue"
 import { AUTO_LOGIN_ACTION } from "../store/constant"
 import { mapState } from "vuex"
 

@@ -2,7 +2,7 @@
     <div class="flex justify-center items-center h-screen bg-blue-primary">
         <form @submit.prevent="onRegister()">   
             <div class="p-6 w-96 shadow-lg bg-white rounded-md">
-                <h1 class="text-3xl block text-center font-semibold"> <i class="fa-solid fa-user"></i> Register</h1>
+                <h1 class="text-3xl block text-center font-semibold text-blue-secondary"> <i class="fa-solid fa-align-justify mr-2"></i> Register</h1>
                 <hr class="mt-3">
                 <div class="mt-3">
                     <label for="email" class="block text-base mb-2">Email</label>
@@ -16,7 +16,7 @@
                 <div class="mt-2 text-red-500 font-semibold" v-if="errors.password">{{ errors.password }}</div>
                 <div class="mt-3 flex justify-end">
                     <div>
-                        <router-link to="/auth/login" class="text-indigo-800 font-semibold">Login</router-link>
+                        <router-link to="/auth/login" class="text-indigo-500 font-semibold">Login</router-link>
                     </div>
                 </div>
                 <div class="flex mt-5 justify-center">

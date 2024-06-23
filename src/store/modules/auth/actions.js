@@ -10,7 +10,7 @@ export default {
                 password: payload.password
             })
 
-            const expirationTime = 10 * 1000
+            const expirationTime = 3600 * 1000
             const expiresAt = new Date().getTime() + expirationTime
             timer = setTimeout(() => {
                 context.dispatch(AUTO_LOGOUT_ACTION)
