@@ -1,21 +1,25 @@
 import { mapGetters } from "vuex";
 import api from "../api";
 import Navigation from "../components/Navigation.vue";
-import { GET_USER_TOKEN_GETTER } from "../store/constant";
+import { GET_RECORDS_GETTER, GET_USER_TOKEN_GETTER, SET_RECORDS_MUTATION } from "../store/constant";
 import { TimeFormatter } from "../services/TimeFormatter";
 import Popup from "../components/Popup.vue";
 import AddRecordForm from "../components/AddRecordForm.vue";
+import { mapActions, mapMutations } from "vuex/dist/vuex.cjs.js";
+import UpdateRecordForm from "../components/UpdateRecordForm.vue";
 
 export default {
     components: {
         Navigation,
         AddRecordForm,
+        UpdateRecordForm,
         Popup
     },
     data() {
         return {
-            records: [],
             showAddRecordForm: false,
+            showUpdateRecordForm: false,
+            updateRecordNumber: -1,
             noRecords: true,
             showPopup: false,
             popupMessage: ''
@@ -24,45 +28,21 @@ export default {
     computed: {
         ...mapGetters('auth', {
             token: GET_USER_TOKEN_GETTER
+        }),
+        ...mapGetters('records', {
+            records: GET_RECORDS_GETTER
         })
     },
     mounted() {
         this.getRecords()
     },
     methods: {
+        ...mapMutations('records', {
+            setRecords: SET_RECORDS_MUTATION
+        }),
+
         formatTime(timeString) {
             return TimeFormatter.fromISODate(timeString)
-        },
-
-        formatRecords(records) {
-            this.records = []
-
-            if (records.length === 0) {
-                this.noRecords = true
-            }
-            else {
-                this.noRecords = false
-            }
-
-            const sortedRecords = records.sort((a, b) => 
-                new Date(b.time) - new Date(a.time)
-            )
-
-            let i = 1
-            for (const record of sortedRecords) {
-                this.records.push({
-                    number: i,
-                    time: record.time,
-                    bloodPressure: {
-                        systolic: record.bloodPressure.systolic,
-                        diastolic: record.bloodPressure.diastolic
-                    },
-                    heartbeat: record.heartbeat,
-                    respiratoryRate: record.respiratoryRate,
-                    temperature: record.temperature
-                })
-                i++
-            }
         },
 
         getRecords() {
@@ -71,8 +51,20 @@ export default {
                     Authorization: `Bearer ${this.token}`
                 }
             }).then((response) => {
-                this.formatRecords(response.data.records)
+                this.setRecords({records: response.data.records})
+
+                if (this.records.length === 0) {
+                    this.noRecords = true
+                }
+                else {
+                    this.noRecords = false
+                }
             })
+        },
+
+        updateRecord(number) {
+            this.openUpdateRecordForm()
+            this.updateRecordNumber = number - 1
         },
 
         deleteRecord(number) {
@@ -102,6 +94,16 @@ export default {
 
         closeAddRecordForm() {
             this.showAddRecordForm = false
+            this.getRecords()
+        },
+
+        openUpdateRecordForm(number) {
+            this.showUpdateRecordForm = true
+        },
+
+        closeUpdateRecordForm() {
+            this.showUpdateRecordForm = false
+            this.updateRecordNumber = -1
             this.getRecords()
         },
 

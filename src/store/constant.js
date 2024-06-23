@@ -8,3 +8,6 @@ export const SET_USER_MUTATION = '[mutations] set user'
 export const SET_AUTO_LOGOUT_MUTATION = '[mutations] set logout'
 export const GET_USER_TOKEN_GETTER = '[getters] get user token'
 export const IS_AUTHENTICATED_GETTER = '[getters] is authenticated'
+
+export const SET_RECORDS_MUTATION = '[mutations] set records'
+export const GET_RECORDS_GETTER = '[getters] get records'
