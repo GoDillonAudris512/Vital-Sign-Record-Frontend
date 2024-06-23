@@ -2,21 +2,21 @@
     <div class="fixed inset-0 flex items-center justify-center z-50">
       <div class="absolute inset-0 bg-gray-800 opacity-75"></div>
       <div class="relative bg-white w-1/2 p-6 rounded-lg shadow-lg">
-        <form @submit.prevent="onAddRecord()">   
+        <form @submit.prevent="onUpdateRecord()">   
             <div class="p-6 shadow-lg bg-white rounded-md">
-                <h1 class="text-3xl block font-semibold text-blue-secondary"><i class="fa-solid fa-clipboard mr-5"></i>Add New Record</h1>
+                <h1 class="text-3xl block font-semibold text-blue-secondary"><i class="fa-solid fa-clipboard mr-5"></i>Update Record</h1>
                 <hr class="mt-3">
                 <div class="mt-3">
                     <p class="block text-base mb-2">Time</p>
                     <div class="flex flex-row">
                         <div class="flex flex-row items-center w-1/2">
                             <label for="date" class="block text-base"></label>
-                            <input type="date" id="date" v-model="date" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"></input>
+                            <input type="date" id="date" :disabled="true" v-model="date" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"></input>
                         </div>
                         <p class="text-[1.2rem] mx-2"></p>
                         <div class="flex flex-row items-center w-1/2">
                             <label for="time" class="block text-base"></label>
-                            <input type="time" id="time" v-model="time" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"></input>
+                            <input type="time" id="time" :disabled="true" v-model="time" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"></input>
                         </div>
                     </div> 
                 </div>
@@ -49,10 +49,10 @@
                 <div class="mt-2 text-red-500 font-semibold text-center">{{ error }}</div>
                 <div class="flex flex-row justify-between gap-5">
                     <div class="flex mt-5 w-1/2">
-                        <button class="border-2 border-blue-primary bg-blue-200 py-1 w-full rounded-md hover:bg-blue-100 hover:font-semibold" @click="closeAddRecordForm()">Cancel</button>
+                        <button class="border-2 border-blue-primary bg-blue-200 py-1 w-full rounded-md hover:bg-blue-100 hover:font-semibold" @click="closeUpdateRecordForm()">Cancel</button>
                     </div>
                     <div class="flex mt-5 w-1/2">
-                        <button class="border-2 border-blue-primary bg-blue-300 py-1 w-full rounded-md hover:bg-blue-200 hover:font-semibold" type="submit">Add</button>
+                        <button class="border-2 border-blue-primary bg-blue-300 py-1 w-full rounded-md hover:bg-blue-200 hover:font-semibold" type="submit">Update</button>
                     </div>
                 </div>
             </div>
@@ -64,11 +64,17 @@
 <script>
 import { mapGetters } from 'vuex/dist/vuex.cjs.js';
 import RecordDataValidations from '../services/RecordDataValidations';
-import { GET_USER_TOKEN_GETTER } from '../store/constant';
+import { GET_RECORDS_GETTER, GET_USER_TOKEN_GETTER } from '../store/constant';
 import { TimeFormatter } from '../services/TimeFormatter';
 import api from '../api';
 
 export default {
+    props: {
+        recordNumber: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
         return {
             date: '',
@@ -84,14 +90,28 @@ export default {
     computed: {
         ...mapGetters('auth', {
             token: GET_USER_TOKEN_GETTER
+        }),
+        ...mapGetters('records', {
+            records: GET_RECORDS_GETTER
         })
     },
+    mounted() {
+        const record = this.records[this.recordNumber]
+        const datetime = TimeFormatter.splitISODate(record.time)
+        this.date = datetime.date
+        this.time = datetime.time
+        this.systolic = record.bloodPressure.systolic
+        this.diastolic = record.bloodPressure.diastolic
+        this.heartbeat = record.heartbeat
+        this.respiratory = record.respiratoryRate
+        this.temperature = record.temperature
+    },
     methods: {
-        closeAddRecordForm() {
+        closeUpdateRecordForm() {
             this.$emit('close')
         },
 
-        async onAddRecord() {
+        async onUpdateRecord() {
             // Validate input
             const recordDataValidation = new RecordDataValidations(
                 this.date,
@@ -112,7 +132,7 @@ export default {
 
             // Add record
             try {
-                const response = await api.post("/record", {
+                const response = await api.put("/record", {
                     time: TimeFormatter.toISODate(this.date, this.time),
                     bloodPressure: {
                         systolic: this.systolic,
@@ -128,7 +148,7 @@ export default {
                 })
 
                 this.error = ''
-                this.closeAddRecordForm()
+                this.closeUpdateRecordForm()
             }
             catch (err) {
                 console.log(err)

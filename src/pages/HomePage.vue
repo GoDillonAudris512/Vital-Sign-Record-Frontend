@@ -35,7 +35,7 @@
                             <td class="text-md px-3 py-2">{{ record.respiratoryRate }}</td>
                             <td class="text-md px-3 py-2">{{ record.temperature }}</td>
                             <td class="flex gap-5 justify-center mt-1 px-3 py-2">
-                                <button>
+                                <button @click="updateRecord(record.number)">
                                     <i class="fa-solid fa-pencil"></i>
                                 </button>
                                 <button @click="deleteRecord(record.number)">
@@ -62,12 +62,14 @@
         </div>
     </main>
     <AddRecordForm v-if="showAddRecordForm" @close="closeAddRecordForm"></AddRecordForm>
+    <UpdateRecordForm v-if="showUpdateRecordForm" @close="closeUpdateRecordForm" :recordNumber="updateRecordNumber"></UpdateRecordForm>
     <Popup v-if="showPopup" :message="popupMessage" @close="closePopup"></Popup>
 </template>
 
 <script>
 import AddRecordForm from '../components/AddRecordForm.vue';
 import Navigation from '../components/Navigation.vue';
+import UpdateRecordForm from '../components/UpdateRecordForm.vue';
 import Home from '../scripts/Home';
 
 export default {
