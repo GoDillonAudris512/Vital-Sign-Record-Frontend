@@ -9,8 +9,7 @@
         </button>
         <div class="flex items-center">
           <div class="ml-4">
-            <div class="text-xl font-bold mb-2">{{ title }}</div>
-            <p class="text-gray-700">{{ message }}</p>
+            <div class="text-xl font-semibold">{{ message }}</div>
           </div>
         </div>
       </div>
@@ -20,10 +19,6 @@
   <script>
   export default {
     props: {
-      title: {
-        type: String,
-        required: true
-      },
       message: {
         type: String,
         required: true

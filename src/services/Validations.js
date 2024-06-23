@@ -12,4 +12,12 @@ export default class Validations {
         }
         return true
     }
+
+    static isEmpty(val) {
+        return val.length == 0
+    }
+
+    static notNumber(val) {
+        return !val
+    }
 }
