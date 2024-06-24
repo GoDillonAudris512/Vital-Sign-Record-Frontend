@@ -5,6 +5,7 @@ import RegisterPage from "../pages/RegisterPage.vue";
 import store from "../store"
 import { IS_AUTHENTICATED_GETTER } from "../store/constant";
 
+// Router
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -35,10 +36,13 @@ const router = createRouter({
     ]
 })
 
+// Guard navigation routes by checking authentication
 router.beforeEach((to, from, next) => {
+    // If user wants to go to protected routes while not authenticated, redirect to login page
     if ('auth' in to.meta && to.meta.auth && !store.getters[`auth/${IS_AUTHENTICATED_GETTER}`]) {
         next("/auth/login")
     }
+    // If user wants to go to login/register page while authenticated, redirect to home page
     else if ('auth' in to.meta && !to.meta.auth && store.getters[`auth/${IS_AUTHENTICATED_GETTER}`]) {
         next("/home")
     }

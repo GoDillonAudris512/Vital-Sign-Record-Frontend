@@ -18,13 +18,18 @@
   
   <script>
   export default {
+    // Props given by parent
     props: {
+      // Message to be displayed on popup
       message: {
         type: String,
         required: true
       }
     },
+
+    // Methods
     methods: {
+      // Close popup by emitting event to parent
       closePopup() {
         this.$emit('close');
       }

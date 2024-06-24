@@ -6,6 +6,7 @@ export default {
     namespaced: true,
     state() {
         return {
+            // Record state consist of array of records
             records: []
         }
     },

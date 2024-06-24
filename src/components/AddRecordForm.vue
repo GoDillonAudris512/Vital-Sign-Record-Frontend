@@ -69,6 +69,7 @@ import { TimeFormatter } from '../services/TimeFormatter';
 import api from '../api';
 
 export default {
+    // Data to be displayed on the form
     data() {
         return {
             date: '',
@@ -81,18 +82,25 @@ export default {
             error: ''
         }
     },
+
+    // Computed variables
     computed: {
+        // Get token from vuex store
         ...mapGetters('auth', {
             token: GET_USER_TOKEN_GETTER
         })
     },
+
+    // Methods
     methods: {
+        // Close the form by emitting event to parent
         closeAddRecordForm() {
             this.$emit('close')
         },
 
+        // When form is submitted, add new vital sign record
         async onAddRecord() {
-            // Validate input
+            // Validate inputs
             const recordDataValidation = new RecordDataValidations(
                 this.date,
                 this.time,
@@ -110,9 +118,10 @@ export default {
                 this.error = ''
             }
 
-            // Add record
+            // Add new record, communicate with BE
             try {
-                const response = await api.post("/record", {
+                // Send POST request to BE
+                await api.post("/record", {
                     time: TimeFormatter.toISODate(this.date, this.time),
                     bloodPressure: {
                         systolic: this.systolic,
@@ -127,11 +136,12 @@ export default {
                     }
                 })
 
+                // No error, record added successfully, close the form
                 this.error = ''
                 this.closeAddRecordForm()
             }
             catch (err) {
-                console.log(err)
+                // Error occured, handle by displaying error message
                 this.error = err.response.data.message
             }
         }

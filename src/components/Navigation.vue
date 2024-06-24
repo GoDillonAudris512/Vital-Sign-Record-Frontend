@@ -21,10 +21,14 @@ import { mapActions } from 'vuex';
 import { LOGOUT_ACTION } from '../store/constant';
 
 export default {
+    // Methods
     methods: {
+        // Map logout action from vuex store
         ...mapActions('auth', {
             logout: LOGOUT_ACTION
         }),
+
+        // When logout button is clicked, perform logout action, redirect user to login page
         onLogout() {
             this.logout()
             this.$router.push("/auth/login")

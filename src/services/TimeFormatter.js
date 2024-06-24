@@ -1,4 +1,6 @@
+// Class to format time from ISO format to custom format, and vice-versa
 export class TimeFormatter {
+    // Return datetime in custom format from ISO format
     static fromISODate(isoDateString) {
         const date = new Date(isoDateString);
         
@@ -13,10 +15,12 @@ export class TimeFormatter {
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
     }
 
+    // Create ISO format from separate date and time string
     static toISODate(dateString, timeString) {
         return `${dateString}T${timeString}:00.000Z`
     }
 
+    // Split ISO format to separate date and time string
     static splitISODate(isoDateString) {
         const date = new Date(isoDateString);
         

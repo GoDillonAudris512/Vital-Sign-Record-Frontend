@@ -1,11 +1,14 @@
 import Validations from "./Validations"
 
+// Class to validate auth data
 export default class AuthValidations {
+    // Auth data consists of email and password
     constructor(email, password) {
         this.email = email
         this.password = password
     }
 
+    // Validate auth data, give error message if validation failed
     check() {
         let errors = {}
         

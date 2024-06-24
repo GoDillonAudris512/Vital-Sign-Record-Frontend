@@ -7,7 +7,7 @@
                     Your Records
                 </div>
                 <button @click="openAddRecordForm()">
-                    <div class="bg-blue-primary text-white font-md-sm px-2 py-1 rounded-lg">
+                    <div class="bg-blue-primary text-white font-md-sm px-2 py-1 rounded-lg hover:bg-blue-300">
                         Add Record
                         <i class="fa-solid fa-plus ml-1"></i>
                     </div>

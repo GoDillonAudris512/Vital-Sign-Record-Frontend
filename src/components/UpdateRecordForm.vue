@@ -69,12 +69,16 @@ import { TimeFormatter } from '../services/TimeFormatter';
 import api from '../api';
 
 export default {
+    // Props given by parent
     props: {
+        // Tells which record needs to be updated
         recordNumber: {
             type: Number,
             required: true
         }
     },
+
+    // Data to be displayed on the form, datetime will be displayed but can't be changed (to maintain uniqueness)
     data() {
         return {
             date: '',
@@ -87,32 +91,45 @@ export default {
             error: ''
         }
     },
+
+    // Computed variables
     computed: {
+        // Get token from vuex store
         ...mapGetters('auth', {
             token: GET_USER_TOKEN_GETTER
         }),
+
+        // Get records from vuex store
         ...mapGetters('records', {
             records: GET_RECORDS_GETTER
         })
     },
+
+    // When form is mounted, populate with data from record that needs to be updated
     mounted() {
         const record = this.records[this.recordNumber]
+
         const datetime = TimeFormatter.splitISODate(record.time)
         this.date = datetime.date
         this.time = datetime.time
+
         this.systolic = record.bloodPressure.systolic
         this.diastolic = record.bloodPressure.diastolic
         this.heartbeat = record.heartbeat
         this.respiratory = record.respiratoryRate
         this.temperature = record.temperature
     },
+
+    // Methods
     methods: {
+        // Close the form by emitting event to parent 
         closeUpdateRecordForm() {
             this.$emit('close')
         },
 
+        // When form is submitted, update existing vital sign record
         async onUpdateRecord() {
-            // Validate input
+            // Validate inputs
             const recordDataValidation = new RecordDataValidations(
                 this.date,
                 this.time,
@@ -130,9 +147,10 @@ export default {
                 this.error = ''
             }
 
-            // Add record
+            // Update record, communicate with BE
             try {
-                const response = await api.put("/record", {
+                // Send PUT request to BE
+                await api.put("/record", {
                     time: TimeFormatter.toISODate(this.date, this.time),
                     bloodPressure: {
                         systolic: this.systolic,
@@ -147,11 +165,12 @@ export default {
                     }
                 })
 
+                // No error, record updated successfully, close the form
                 this.error = ''
                 this.closeUpdateRecordForm()
             }
             catch (err) {
-                console.log(err)
+                // Error occured, handle by displaying error message
                 this.error = err.response.data.message
             }
         }

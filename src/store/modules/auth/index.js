@@ -6,6 +6,7 @@ export default {
     namespaced: true,
     state() {
         return {
+            // Auth state consist of token, expiration time, and auto-logout condition
             token: null,
             expiresAt: null,
             autoLogout: false
