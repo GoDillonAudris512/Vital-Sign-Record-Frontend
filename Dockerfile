@@ -1,17 +1,9 @@
-# Stage 1 : Builder
 FROM node:lts-alpine AS builder
 WORKDIR /frontend
-COPY package*.json ./
-
-RUN npm install
 
 COPY . .
-RUN npm run build
+RUN npm install
 
-# Stage 2: Application
-FROM nginx:latest
-COPY --from=builder /frontend/dist /usr/share/nginx/html
+EXPOSE 5173
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "dev"]
